@@ -506,7 +506,8 @@ impl Server {
 
             if message.code() == 'E' {
                 let err = ErrorResponse::from_bytes(message.to_bytes()?)?;
-                return Err(Error::ExecutionError(Box::new(err)));
+                let database_name = self.addr().database_name.clone();
+                return Err(Error::ExecutionErrorWithDatabase(Box::new(err), database_name));
             }
             messages.push(message);
         }
@@ -529,7 +530,8 @@ impl Server {
         let error = messages.iter().find(|m| m.code() == 'E');
         if let Some(error) = error {
             let error = ErrorResponse::from_bytes(error.to_bytes()?)?;
-            Err(Error::ExecutionError(Box::new(error)))
+            let database_name = self.addr().database_name.clone();
+            Err(Error::ExecutionErrorWithDatabase(Box::new(error), database_name))
         } else {
             Ok(messages)
         }
