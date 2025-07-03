@@ -75,6 +75,9 @@ pub enum Error {
     #[error("{0}")]
     ExecutionError(Box<ErrorResponse>),
 
+    #[error("database '{}': {}", .1, .0)]
+    ExecutionErrorWithDatabase(Box<ErrorResponse>, String),
+
     #[error("{0}")]
     Auth(#[from] crate::auth::Error),
 
